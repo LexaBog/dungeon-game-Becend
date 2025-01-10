@@ -79,10 +79,10 @@ app.get("/api/player/:userId", async (req, res) => {
 /// 3. PUT /api/player - обновление данных игрока
 app.put("/api/player", async (req, res) => {
   try {
-    let { userId, name, xp, gold, power, level, armor, damage } = req.body;
+    const { userId, name, xp, gold, power, level, armor, damage } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ error: "userId is required for updating player" });
+    if (!userId || !name) {
+      return res.status(400).json({ error: "userId и name обязательны" });
     }
 
     const playerRef = doc(db, "players", userId);
@@ -98,6 +98,7 @@ app.put("/api/player", async (req, res) => {
     res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 /// 4. Проверочный маршрут
 app.get("/test", (req, res) => {
