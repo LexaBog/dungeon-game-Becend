@@ -8,6 +8,7 @@ const gameUrl = 'https://dungeon-crawler-game.vercel.app/';
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
+  const username = msg.from.username || "Unknown Player";
   
   // Отправка кнопки с ссылкой на игру
   bot.sendMessage(chatId, 'Добро пожаловать в игру Dungeons and Heroes! Нажмите на ссылку ниже, чтобы начать игру.',
@@ -18,9 +19,25 @@ bot.onText(/\/start/, (msg) => {
             {
               text: 'Начать игру',
               url: gameUrl
-            }
+            },
+            {
+              text: "Играть",
+              url: `https://dungeon-crawler-game.vercel.app/${username}`, // Добавляем имя в URL
+            },
           ]
         ]
       }
     });
+    // bot.sendMessage(chatId, "Добро пожаловать в игру!", {
+    //   reply_markup: {
+    //     inline_keyboard: [
+    //       [
+    //         {
+    //           text: "Играть",
+    //           url: `https://your-game-url?username=${username}`, // Добавляем имя в URL
+    //         },
+    //       ],
+    //     ],
+    //   },
+    // });
 });

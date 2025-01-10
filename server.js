@@ -25,23 +25,6 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
-
-// app.put("/api/player", async (req, res) => {
-//   try {
-//     console.log("Request body:", req.body); // Логируем тело запроса
-
-//     // Логика для Firestore
-//     const playerRef = doc(db, "players", req.body.userId);
-//     await setDoc(playerRef, req.body, { merge: true });
-
-//     res.status(200).json({ message: "Player updated" });
-//   } catch (error) {
-//     console.error("Error updating player:", error); // Логируем ошибку
-//     res.status(500).json({ error: "Internal server error", details: error.message });
-//   }
-// });
-
-
 app.put("/api/player", async (req, res) => {
   try {
     let { userId, name, xp, gold, power, level, armor, damage } = req.body;
