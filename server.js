@@ -41,7 +41,6 @@ const db = getFirestore(firebaseApp);
 //   }
 // });
 
-const { v4: uuidv4 } = require("uuid");
 
 app.put("/api/player", async (req, res) => {
   try {
