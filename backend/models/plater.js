@@ -7,8 +7,8 @@ const playerSchema = new Schema({
   username: { type: String, required: true },  // Имя игрока
   progress: { type: Number, default: 0 },  // Прогресс игрока (например, уровень)
   inventory: { type: Array, default: [] },  // Инвентарь игрока
-  gold: { type: Number, default: 0 },  // Золото игрока
-  power: {type: Number,default: 0},
+  gold: { type: Number, default: 100 },  // Золото игрока
+  power: {type: Number,default: 10},
   damage: {type: Number,default: 0}
 });
 

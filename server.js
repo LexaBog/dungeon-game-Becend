@@ -1,7 +1,13 @@
 const express = require("express");
 const cors = require("cors"); // Для обработки запросов с фронта
 const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, addDoc, getDocs, doc, setDoc, } = require("firebase/firestore");
+const {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+} = require("firebase/firestore");
 
 const app = express();
 const port = 5000;
@@ -25,50 +31,75 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
+/// 1. POST /api/player - создание нового игрока
+app.post("/api/player", async (req, res) => {
+  try {
+    const { name } = req.body; // Имя передаётся в теле запроса
+    const userId = uuidv4(); // Генерируем уникальный идентификатор
+
+    const playerData = {
+      userId,
+      name,
+      xp: 0,
+      gold: 100,
+      power: 0,
+      level: 1,
+      armor: 0,
+      damage: 1,
+    };
+
+    const playerRef = doc(db, "players", userId);
+    await setDoc(playerRef, playerData);
+
+    res.status(201).json(playerData); // Возвращаем данные нового игрока
+  } catch (error) {
+    console.error("Error creating player:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
+  }
+});
+
+/// 2. GET /api/player/:userId - получение данных игрока
+app.get("/api/player/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params; // Извлекаем userId из параметров URL
+    const playerRef = doc(db, "players", userId);
+    const playerSnapshot = await getDoc(playerRef);
+
+    if (!playerSnapshot.exists()) {
+      return res.status(404).json({ error: "Player not found" });
+    }
+
+    res.status(200).json(playerSnapshot.data()); // Отправляем данные игрока
+  } catch (error) {
+    console.error("Error fetching player data:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
+  }
+});
+
+/// 3. PUT /api/player - обновление данных игрока
 app.put("/api/player", async (req, res) => {
   try {
     let { userId, name, xp, gold, power, level, armor, damage } = req.body;
 
-    // Генерируем userId, если его нет
-    if (!userId || userId === "undefined") {
-      userId = uuidv4(); // Генерация уникального идентификатора
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required for updating player" });
     }
 
-    console.log("Generated or received userId:", userId);
-
-    const playerRef = doc(db, "players", userId); // Используем userId как идентификатор документа
+    const playerRef = doc(db, "players", userId);
     await setDoc(
       playerRef,
       { userId, name, xp, gold, power, level, armor, damage },
       { merge: true }
     );
 
-    res.status(200).json({ message: "Player updated or created", userId });
+    res.status(200).json({ message: "Player updated successfully" });
   } catch (error) {
     console.error("Error updating player:", error);
     res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 
-
-
-// API: Получить всех игроков
-// app.get("/api/players", async (req, res) => {
-//   try {
-//     const playersSnapshot = await getDocs(collection(db, "players"));
-//     const players = playersSnapshot.docs.map((doc) => ({
-//       id: doc.id,
-//       ...doc.data(),
-//     }));
-//     res.status(200).json(players);
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ error: "Ошибка при получении игроков", details: error.message });
-//   }
-// });
-
-// Проверочный маршрут
+/// 4. Проверочный маршрут
 app.get("/test", (req, res) => {
   res.send("Бэкенд работает!");
 });

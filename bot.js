@@ -16,28 +16,13 @@ bot.onText(/\/start/, (msg) => {
       reply_markup: {
         inline_keyboard: [
           [
-            {
-              text: 'Начать игру',
-              url: gameUrl
-            },
+           
             {
               text: "Играть",
-              url: `https://dungeon-crawler-game.vercel.app/${username}`, // Добавляем имя в URL
+              url: `${gameUrl}${encodeURIComponent(username)}`,
             },
           ]
         ]
       }
     });
-    // bot.sendMessage(chatId, "Добро пожаловать в игру!", {
-    //   reply_markup: {
-    //     inline_keyboard: [
-    //       [
-    //         {
-    //           text: "Играть",
-    //           url: `https://your-game-url?username=${username}`, // Добавляем имя в URL
-    //         },
-    //       ],
-    //     ],
-    //   },
-    // });
 });
