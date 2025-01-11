@@ -2,7 +2,7 @@ const { initializeApp } = require("firebase/app");
 const { getFirestore, doc, setDoc } = require("firebase/firestore");
 const { v4: uuidv4 } = require("uuid");
 
-// Настройки Firebase
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCx6G-rteUAZk4ahEy08RKYv_MWpu4sz_A",
   authDomain: "dungeons-end-heroes.firebaseapp.com",
