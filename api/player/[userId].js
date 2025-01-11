@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
   if (req.method === "GET") {
     try {
       const { userId } = req.query;
+
       const playerRef = doc(db, "players", userId);
       const playerSnapshot = await getDoc(playerRef);
 
