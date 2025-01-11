@@ -1,6 +1,6 @@
 import express from "express";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase"; // Проверьте путь до firebase
+import { db } from "./api/firebase"; // Проверьте путь до firebase
 
 const app = express();
 
@@ -28,6 +28,4 @@ app.get("/api/player/:userId", async (req, res) => {
   
 
 const PORT = 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+
