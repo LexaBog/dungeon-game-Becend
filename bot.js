@@ -1,28 +1,40 @@
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require("node-telegram-bot-api");
+const axios = require("axios"); // Используем axios для запросов
 
 // Токен Telegram-бота
-const bot = new TelegramBot('7319438464:AAFL8mYzpsy_8qb8UKmx4kKOw3Ha3gVZdyQ', { polling: true });
+const botToken = "YOUR_TELEGRAM_BOT_TOKEN"; // Замените на ваш токен
+const bot = new TelegramBot(botToken, { polling: true });
 
-// Ваш URL с игрой (замените на ваш)
-const gameUrl = 'https://dungeon-crawler-game.vercel.app/';
+// URL вашего сервера
+const serverUrl = "http://localhost:5000/api/player"; // Замените на реальный URL сервера
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const username = msg.from.username || "Unknown Player";
-  
-  // Отправка кнопки с ссылкой на игру
-  bot.sendMessage(chatId, 'Добро пожаловать в игру Dungeons and Heroes! Нажмите на ссылку ниже, чтобы начать игру.',
-    {
-      reply_markup: {
-        inline_keyboard: [
-          [
-           
-            {
-              text: "Играть",
-              url: `${gameUrl}${encodeURIComponent(username)}`,
-            },
-          ]
-        ]
+
+  try {
+    // Отправляем запрос на сервер для создания или обновления игрока
+    const response = await axios.post(serverUrl, { name: username });
+
+    // Уведомляем пользователя об успешной регистрации
+    bot.sendMessage(
+      chatId,
+      `Добро пожаловать в игру, ${username}! Ваш прогресс сохранён.`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "Играть",
+                url: "https://dungeon-crawler-game.vercel.app", // Ссылка на игру
+              },
+            ],
+          ],
+        }
       }
-    });
+    );
+  } catch (error) {
+    console.error("Error creating player:", error);
+    bot.sendMessage(chatId, "Произошла ошибка при регистрации. Попробуйте позже.");
+  }
 });

@@ -10,6 +10,7 @@ const {
 } = require("firebase/firestore");
 
 const app = express();
+app.use(express.json()); // Для обработки JSON-запросов
 const port = 5000;
 const { v4: uuidv4 } = require("uuid");
 
@@ -31,12 +32,15 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
+
+
 /// 1. POST /api/player - создание нового игрока
 app.post("/api/player", async (req, res) => {
   try {
     const { name } = req.body; // Имя передаётся в теле запроса
-    const userId = uuidv4(); // Генерируем уникальный идентификатор
+    const userId = req.body.userId || uuidv4(); // Генерируем userId, если он отсутствует
 
+    // const playerRef = doc(db, "players", userId);
     const playerData = {
       userId,
       name,
@@ -49,7 +53,7 @@ app.post("/api/player", async (req, res) => {
     };
 
     const playerRef = doc(db, "players", userId);
-    await setDoc(playerRef, playerData);
+    await setDoc(playerRef, playerData, { merge: true });
 
     res.status(201).json(playerData); // Возвращаем данные нового игрока
   } catch (error) {
