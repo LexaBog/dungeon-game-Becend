@@ -1,30 +1,41 @@
-const { db } = require("../../backend/firebase");
-const { doc, setDoc } = require("firebase/firestore");
-const { v4: uuidv4 } = require("uuid");
+// const { db } = require("../../../backend/firebase");
+// const { doc, getDoc } = require("firebase/firestore");
+
+// module.exports = async (req, res) => {
+//   try {
+//     const { userId } = req.query;
+
+//     const playerRef = doc(db, "players", userId);
+//     const playerSnapshot = await getDoc(playerRef);
+
+//     if (!playerSnapshot.exists()) {
+//       return res.status(404).json({ error: "Player not found" });
+//     }
+
+//     return res.status(200).json(playerSnapshot.data());
+//   } catch (error) {
+//     console.error("Error fetching player data:", error);
+//     return res.status(500).json({ error: "Internal server error", details: error.message });
+//   }
+// };
+const { db } = require("../../../backend/firebase");
+const { doc, getDoc } = require("firebase/firestore");
 
 module.exports = async (req, res) => {
-  if (req.method === "POST") {
+  if (req.method === "GET") {
     try {
-      const { name } = req.body || { name: "Unknown" };
-      const userId = uuidv4();
-
-      const playerData = {
-        userId,
-        name,
-        xp: 0,
-        gold: 100,
-        power: 10,
-        level: 1,
-        armor: 2,
-        damage: 1,
-      };
+      const { userId } = req.query;
 
       const playerRef = doc(db, "players", userId);
-      await setDoc(playerRef, playerData);
+      const playerSnapshot = await getDoc(playerRef);
 
-      return res.status(201).json({ message: "Player created", playerData });
+      if (!playerSnapshot.exists()) {
+        return res.status(404).json({ error: "Player not found" });
+      }
+
+      return res.status(200).json(playerSnapshot.data());
     } catch (error) {
-      console.error("Error creating player:", error);
+      console.error("Error fetching player data:", error);
       return res.status(500).json({ error: "Internal server error", details: error.message });
     }
   } else {
