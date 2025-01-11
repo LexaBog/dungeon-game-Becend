@@ -68,6 +68,7 @@ app.get("/api/player/:userId", async (req, res) => {
     const { userId } = req.params; // Извлекаем userId из параметров URL
     const playerRef = doc(db, "players", userId);
     const playerSnapshot = await getDoc(playerRef);
+    res.send("Добро пожаловать на сервер!");
 
     if (!playerSnapshot.exists()) {
       return res.status(404).json({ error: "Player not found" });
