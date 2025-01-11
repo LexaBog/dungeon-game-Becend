@@ -1,37 +1,30 @@
-const { initializeApp } = require("firebase/app");
-const { getFirestore, doc, getDoc } = require("firebase/firestore");
-const { db } = require("../firebase");
-
-
-// Настройки Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCx6G-rteUAZk4ahEy08RKYv_MWpu4sz_A",
-  authDomain: "dungeons-end-heroes.firebaseapp.com",
-  projectId: "dungeons-end-heroes",
-  storageBucket: "dungeons-end-heroes.firebasestorage.app",
-  messagingSenderId: "109144668510",
-  appId: "1:109144668510:web:1650a764cd84def26177cf",
-  measurementId: "G-EPLEPNK74N",
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+const { db } = require("../../backend/firebase");
+const { doc, setDoc } = require("firebase/firestore");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = async (req, res) => {
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     try {
-      const { userId } = req.query;
+      const { name } = req.body || { name: "Unknown" };
+      const userId = uuidv4();
+
+      const playerData = {
+        userId,
+        name,
+        xp: 0,
+        gold: 100,
+        power: 10,
+        level: 1,
+        armor: 2,
+        damage: 1,
+      };
 
       const playerRef = doc(db, "players", userId);
-      const playerSnapshot = await getDoc(playerRef);
+      await setDoc(playerRef, playerData);
 
-      if (!playerSnapshot.exists()) {
-        return res.status(404).json({ error: "Player not found" });
-      }
-
-      return res.status(200).json(playerSnapshot.data());
+      return res.status(201).json({ message: "Player created", playerData });
     } catch (error) {
-      console.error("Error fetching player data:", error);
+      console.error("Error creating player:", error);
       return res.status(500).json({ error: "Internal server error", details: error.message });
     }
   } else {

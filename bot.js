@@ -1,12 +1,12 @@
 const TelegramBot = require("node-telegram-bot-api");
-const axios = require("axios"); // Используем axios для запросов
+const axios = require("axios");
 
 // Токен Telegram-бота
 const botToken = "YOUR_TELEGRAM_BOT_TOKEN"; // Замените на ваш токен
 const bot = new TelegramBot(botToken, { polling: true });
 
 // URL вашего сервера
-const serverUrl = "http://localhost:5000/api/player"; // Замените на реальный URL сервера
+const serverUrl = "https://dungeon-game-becend.vercel.app/api/player";
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
@@ -30,7 +30,7 @@ bot.onText(/\/start/, async (msg) => {
               },
             ],
           ],
-        }
+        },
       }
     );
   } catch (error) {
