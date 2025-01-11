@@ -18,7 +18,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getFirestore  } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,9 +31,9 @@ const firebaseConfig = {
   storageBucket: "dungeons-end-heroes.firebasestorage.app",
   messagingSenderId: "109144668510",
   appId: "1:109144668510:web:1650a764cd84def26177cf",
-  measurementId: "G-EPLEPNK74N"
+  // measurementId: "G-EPLEPNK74N"
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
