@@ -1,6 +1,6 @@
 import express from "express";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "./api/firebase"; // Проверьте путь до firebase
+import  db  from "../firebase"; // Проверьте путь до firebase
 
 const app = express();
 
