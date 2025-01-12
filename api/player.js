@@ -73,8 +73,14 @@
 // });
 
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "./firebase.js";
 import { v4 as uuidv4 } from "uuid";
+import cors from "cors";
+
+const corsOptions = {
+  origin: "*", // Разрешить запросы с любого домена
+  methods: ["GET", "POST", "PUT"],
+};
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
