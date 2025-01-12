@@ -1,40 +1,32 @@
-import express from "express";
+import { db } from "../firebaseAdmin"; // Убедитесь, что путь корректный
+import { v4 as uuidv4 } from "uuid";
 
-import { db } from "./firebaseAdmin"; // Путь к вашему файлу с настройками Firebase
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    try {
+      const { name } = req.body || "Unknown";
+      const userId = uuidv4();
 
-const app = express();
-app.use(express.json());
+      const playerData = {
+        userId,
+        name,
+        xp: 0,
+        gold: 100,
+        power: 10,
+        level: 1,
+        armor: 2,
+        damage: 1,
+      };
 
-console.log("API function called:", req.method, req.url);
+      const playerRef = db.collection("players").doc(userId);
+      await playerRef.set(playerData);
 
-
-app.post("/api/player", async (req, res) => {
-  console.log("POST request received with data:", req.body);
-  try {
-    const { name } = req.body || "Unknown";
-    const userId = uuidv4();
-
-    const playerData = {
-      userId,
-      name,
-      xp: 0,
-      gold: 100,
-      power: 10,
-      level: 1,
-      armor: 2,
-      damage: 1,
-    };
-
-    const playerRef = doc(db, "players", userId);
-    await setDoc(playerRef, playerData);
-
-    console.log("Player added to Firestore:", playerData);
-    res.status(201).json({ message: `Player ${name} created` });
-  } catch (error) {
-    console.error("Error adding player to Firestore:", error.message);
-    res.status(500).json({ error: "Something went wrong" });
+      res.status(201).json({ message: `Player ${name} created`, playerData });
+    } catch (error) {
+      console.error("Error creating player:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
-});
-
-
-
+}

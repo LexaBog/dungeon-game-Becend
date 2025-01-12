@@ -1,4 +1,4 @@
-import admin from "firebase-admin";
+
 
 // Инициализация Firebase Admin SDK
 // if (!admin.apps.length) {
@@ -28,10 +28,20 @@ import admin from "firebase-admin";
 
 // import admin from "firebase-admin";
 
+
+import admin from "firebase-admin";
+import * as dotenv from "dotenv";
+
+// Загружаем переменные окружения
+dotenv.config();
+
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://dungeons-end-heroes.firebaseio.com", // Убедитесь, что этот URL правильный
 });
 
-export const db = admin.firestore();
+const db = admin.firestore();
+
+export default db;
