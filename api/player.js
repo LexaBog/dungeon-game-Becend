@@ -7,7 +7,10 @@ app.use(express.json());
 
 app.post("/api/player", async (req, res) => {
   try {
-    const { userId, name } = req.body;
+    const { name } = req.body || "Unknown";
+    const userId = uuidv4();
+
+    console.log("Received data:", { name, userId });
 
     const playerData = {
       userId,
@@ -20,15 +23,17 @@ app.post("/api/player", async (req, res) => {
       damage: 1,
     };
 
-    await db.collection("players").doc(userId).set(playerData);
+    console.log("Player data to save:", playerData);
+
+    const playerRef = doc(db, "players", userId);
+    await setDoc(playerRef, playerData);
+
+    console.log("Player successfully saved:", playerData);
+
     res.status(201).json({ message: "Player created", playerData });
   } catch (error) {
-    console.error("Error creating player:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error in POST /api/player:", error);
+    res.status(500).json({ error: "Something went wrong", details: error.message });
   }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
