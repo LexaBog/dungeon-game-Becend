@@ -29,28 +29,23 @@
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
-    try {
-      const { userId } = req.query; // Получаем userId из параметров запроса
-      if (!userId) {
-        return res.status(400).json({ error: "userId is required" });
-      }
+app.get("/api/player/:userId", async (req, res) => {
+  console.log("GET request received for userId:", req.params.userId);
+  try {
+    const { userId } = req.params;
+    const playerRef = doc(db, "players", userId);
+    const playerSnapshot = await getDoc(playerRef);
 
-      const playerRef = doc(db, "players", userId); // Ссылка на документ в Firebase
-      const playerSnapshot = await getDoc(playerRef);
-
-      if (!playerSnapshot.exists()) {
-        return res.status(404).json({ error: "Player not found" });
-      }
-
-      return res.status(200).json(playerSnapshot.data());
-    } catch (error) {
-      console.error("Error fetching player data:", error);
-      return res.status(500).json({ error: "Internal server error", details: error.message });
+    if (!playerSnapshot.exists()) {
+      console.log("Player not found:", userId);
+      return res.status(404).json({ error: "Player not found" });
     }
-  } else {
-    res.setHeader("Allow", ["GET"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    console.log("Player data retrieved:", playerSnapshot.data());
+    res.status(200).json(playerSnapshot.data());
+  } catch (error) {
+    console.error("Error fetching player data:", error.message);
+    res.status(500).json({ error: "Something went wrong" });
   }
-}
+});
+

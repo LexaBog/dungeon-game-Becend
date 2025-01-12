@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
 
-// // Инициализация Firebase Admin SDK
+// Инициализация Firebase Admin SDK
 // if (!admin.apps.length) {
 //   admin.initializeApp({
 //     credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)), // Убедитесь, что этот файл настроен
@@ -26,7 +26,7 @@ import admin from "firebase-admin";
 //   }
 // };
 
-import admin from "firebase-admin";
+// import admin from "firebase-admin";
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 

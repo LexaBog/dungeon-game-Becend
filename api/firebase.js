@@ -1,6 +1,6 @@
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, applicationDefault, cert } from "firebase/app";
 import { getFirestore  } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -17,6 +17,11 @@ const firebaseConfig = {
   measurementId: "G-EPLEPNK74N"
 };
 
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+initializeApp({
+  credential: cert(serviceAccount),
+});
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
