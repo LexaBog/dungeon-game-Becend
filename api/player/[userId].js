@@ -29,30 +29,29 @@
 
 // const PORT = 5000;
 
+import express from "express";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase.js";
+import { db } from "../../firebase"; // Убедитесь, что путь правильный
+import { authenticateToken } from "../../middleware/authenticate";
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
-    try {
-      const { userId } = req.query;
-      if (!userId) {
-        return res.status(400).json({ error: "userId is required" });
-      }
+const app = express();
 
-      const playerRef = doc(db, "players", userId);
-      const playerSnapshot = await getDoc(playerRef);
+app.get("/api/player/:userId", authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-      if (!playerSnapshot.exists()) {
-        return res.status(404).json({ error: "Player not found" });
-      }
+    const playerRef = doc(db, "players", userId);
+    const playerSnapshot = await getDoc(playerRef);
 
-      res.status(200).json(playerSnapshot.data());
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+    if (!playerSnapshot.exists()) {
+      return res.status(404).json({ error: "Player not found" });
     }
-  } else {
-    res.status(405).json({ error: "Method not allowed" });
+
+    res.status(200).json(playerSnapshot.data());
+  } catch (error) {
+    console.error("Error fetching player data:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
-}
+});
+
+export default app;
